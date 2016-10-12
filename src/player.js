@@ -2,16 +2,8 @@
 
 const MS_PER_FRAME = 1000/8;
 
-/**
- * @module exports the Player class
- */
 module.exports = exports = Player;
 
-/**
- * @constructor Player
- * Creates a new player object
- * @param {Postition} position object specifying an x and y
- */
 function Player(position, canvas) {
   this.worldWidth = canvas.width;
   this.worldHeight = canvas.height;
@@ -66,12 +58,6 @@ function Player(position, canvas) {
   }
 }
 
-
-
-/**
- * @function updates the player object
- * {DOMHighResTimeStamp} time the elapsed time since the last frame
- */
 Player.prototype.update = function(time) {
   // Apply angular velocity
   if(this.steerLeft) {
@@ -99,11 +85,6 @@ Player.prototype.update = function(time) {
   if(this.position.y > this.worldHeight) this.position.y -= this.worldHeight;
 }
 
-/**
- * @function renders the player into the provided context
- * {DOMHighResTimeStamp} time the elapsed time since the last frame
- * {CanvasRenderingContext2D} ctx the context to render into
- */
 Player.prototype.render = function(time, ctx) {
   ctx.save();
 
