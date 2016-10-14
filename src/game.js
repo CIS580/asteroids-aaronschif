@@ -1,36 +1,59 @@
 "use strict";
 
-module.exports = exports = Game;
+import {Astroid} from './astroid'
+const Player = require('./player.js');
 
-function Game(screen, updateFunction, renderFunction) {
-  this.update = updateFunction;
-  this.render = renderFunction;
+export class Game {
+    constructor(screen) {
 
-  // Set up buffers
-  this.frontBuffer = screen;
-  this.frontCtx = screen.getContext('2d');
-  this.backBuffer = document.createElement('canvas');
-  this.backBuffer.width = screen.width;
-  this.backBuffer.height = screen.height;
-  this.backCtx = this.backBuffer.getContext('2d');
+        // Set up buffers
+        this.frontBuffer = screen;
+        this.frontCtx = screen.getContext('2d');
+        this.backBuffer = document.createElement('canvas');
+        this.backBuffer.width = screen.width;
+        this.backBuffer.height = screen.height;
+        this.backCtx = this.backBuffer.getContext('2d');
 
-  // Start the game loop
-  this.oldTime = performance.now();
-  this.paused = false;
-}
+        // Start the game loop
+        this.oldTime = performance.now();
+        this.paused = false;
 
-Game.prototype.pause = function(flag) {
-  this.paused = (flag == true);
-}
+        this.astroids = []
+        this.player = new Player({x: this.backBuffer.width/2, y: this.backBuffer.height/2}, this.backBuffer);
+    }
 
-Game.prototype.loop = function(newTime) {
-  var game = this;
-  var elapsedTime = newTime - this.oldTime;
-  this.oldTime = newTime;
+    pause(flag) {
+        this.paused = (flag == true);
+    }
 
-  if(!this.paused) this.update(elapsedTime);
-  this.render(elapsedTime, this.frontCtx);
+    loop(newTime) {
+        var game = this;
+        var elapsedTime = newTime - this.oldTime;
+        this.oldTime = newTime;
 
-  // Flip the back buffer
-  this.frontCtx.drawImage(this.backBuffer, 0, 0);
+        if(!this.paused) this.update(elapsedTime);
+        this.render(elapsedTime, this.frontCtx);
+
+        // Flip the back buffer
+        this.frontCtx.drawImage(this.backBuffer, 0, 0);
+    }
+
+
+    update(elapsedTime) {
+        this.player.update(elapsedTime);
+        for (let astroid of this.astroids) {
+            astroid.update({dt: elapsedTime})
+        }
+        // TODO: Update the game objects
+    }
+
+    render(elapsedTime, ctx) {
+        ctx.fillStyle = "black";
+        ctx.fillRect(0, 0, this.backBuffer.width, this.backBuffer.height);
+        this.player.render(elapsedTime, ctx);
+
+        for (let astroid of this.astroids) {
+            astroid.render({ctx: ctx, dt: elapsedTime})
+        }
+    }
 }
