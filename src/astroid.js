@@ -11,13 +11,20 @@ export class Astroid extends Actor {
         this.dy = dy
         this.drot = dr
 
+        // this.points = [
+        //     {x: 1, y: 1},
+        //     {x: 1, y: 12},
+        //     {x: -10, y: 8},
+        //     {x: -16, y: -2},
+        //     {x: -4, y: -10},
+        //     {x: 8, y: -10},
+        //     {x: 12, y: 0},
+        // ]
         this.points = [
-            {x: 1, y: 12},
-            {x: -10, y: 8},
-            {x: -16, y: -2},
-            {x: -4, y: -10},
-            {x: 8, y: -10},
-            {x: 12, y: 0},
+            {x: -12, y: -12},
+            {x: -12, y: 12},
+            {x: 12, y: 12},
+            {x: 12, y: -12},
         ]
         this.scale = scale
     }
@@ -58,11 +65,13 @@ export class Astroid extends Actor {
             ctx.beginPath()
             ctx.lineWidth="2"
             ctx.strokeStyle="grey"
-            ctx.moveTo(this.x, this.y)
+
+            let {x, y} = points[0]
+            ctx.moveTo(this.x+x*this.scale, this.y+y*this.scale)
             for (let {x, y} of points) {
                 ctx.lineTo(this.x+x*this.scale, this.y+y*this.scale)
             }
-            ctx.lineTo(this.x, this.y)
+            ctx.lineTo(this.x+x*this.scale, this.y+y*this.scale)
             ctx.stroke()
             ctx.fillStyle = 'yellow'
             ctx.fillRect(this.x, this.y, 2, 2)
