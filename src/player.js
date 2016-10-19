@@ -2,9 +2,12 @@
 
 const MS_PER_FRAME = 1000/8;
 
+import {Bolt} from './bolt'
+
 module.exports = exports = Player;
 
-function Player(position, canvas) {
+function Player(position, canvas, world) {
+    this.world = world
   this.worldWidth = canvas.width;
   this.worldHeight = canvas.height;
   this.state = "idle";
@@ -37,6 +40,9 @@ function Player(position, canvas) {
       case 'd':
         self.steerRight = true;
         break;
+      case ' ':
+        Bolt.create(world, self)
+        break;
     }
   }
 
@@ -54,8 +60,22 @@ function Player(position, canvas) {
       case 'd':
         self.steerRight = false;
         break;
+      case 'c':
+        self.reposition();
+        break;
     }
   }
+}
+
+Player.prototype.reposition = function() {
+    this.position = {
+      x: this.worldWidth*Math.random(),
+      y: this.worldWidth*Math.random()
+    };
+    this.velocity = {
+      x: 0,
+      y: 0
+    }
 }
 
 Player.prototype.update = function(time) {

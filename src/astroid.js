@@ -110,8 +110,6 @@ const SPRITES = [
 const base_size = 20
 
 export class Astroid extends Actor {
-
-
     constructor(world, {x, y, r, dx, dy, dr, scale}) {
         super(world)
         this.x = x
@@ -124,17 +122,42 @@ export class Astroid extends Actor {
 
         this.scale = scale
         this.image = SPRITES[(Math.random() * SPRITES.length)|0]
+        this.collision_timeout = 0
+        this.collision_adjust_timeout = 0
+    }
+
+    radius() {
+        return this.scale * base_size / 2
+    }
+
+    explode() {
+
+        let newa = new this.constructor(this.world, {
+            x: this.x,
+            y: this.y,
+            r: (-.5 + Math.random())*4,
+            dx: (-.5 + Math.random())*4,
+            dy: (-.5 + Math.random())*4,
+            dr: (-.5 + Math.random())/4,
+            scale: (this.scale / 2)|0,
+        })
+        this.world.astroids.push(newa)
+        this.scale = this.scale -= 1
+    }
+
+    collect(){
+        return this.scale < 1
     }
 
     static create(world) {
         let t = new this(world, {
             x: (world.width * Math.random())|0,
             y: (world.height * Math.random())|0,
-            r: Math.random()*4,
+            r: (-.5 + Math.random())*4,
             dx: (-.5 + Math.random())*4,
             dy: (-.5 + Math.random())*4,
-            drot: (-.5 + Math.random())*4,
-            scale: (Math.random()*5)|0,
+            dr: (-.5 + Math.random())/4,
+            scale: (Math.random()*5)|0 + 1,
         })
         return t
     }
