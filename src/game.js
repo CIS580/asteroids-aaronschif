@@ -22,7 +22,10 @@ export class Game {
         this.paused = false;
 
         this.astroids = [
-            new Astroid(this, {x:300, y:300, r:0, dx:-1, dy:0, dr:.1, scale: 2}),
+            // new Astroid(this, {x:300, y:300, r:0, dx:-1, dy:0, dr:.1, scale: 2}),
+            Astroid.create(this),
+            Astroid.create(this),
+            Astroid.create(this),
             // new Astroid(this, {x:30, y:300, r:0, dx:1, dy:0, dr:.1, scale: 3}),
         ]
         this.player = new Player({x: this.backBuffer.width/2, y: this.backBuffer.height/2}, this.backBuffer);
