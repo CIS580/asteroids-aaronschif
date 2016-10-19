@@ -3,6 +3,19 @@
 import {Astroid} from './astroid'
 const Player = require('./player.js');
 
+let soundEffect = new Audio(encodeURI('assets/bong.ogg'));
+
+function swap(a, b) {
+    let t = a.dx
+    a.dx = b.dx*b.scale/a.scale
+    b.dx = t*a.scale/b.scale
+
+    t = a.dy
+    a.dy = b.dy*b.scale/a.scale
+    b.dy = t*a.scale/b.scale
+}
+
+
 export class Game {
     constructor(screen) {
 
@@ -70,12 +83,14 @@ export class Game {
             if (Math.pow(this.player.position.x - astroid.x, 2) + Math.pow(this.player.position.y - astroid.y, 2) < Math.pow(5+astroid.radius(), 2)) {
                 this.lives -= 1
                 this.player.reposition()
+                soundEffect.play()
             }
             for (let bolt of this.bolts) {
                 if (Math.pow(bolt.x - astroid.x, 2) + Math.pow(bolt.y - astroid.y, 2) < Math.pow(astroid.radius(), 2)) {
                     bolt._collect = true
                     astroid.explode()
                     this.score += 10
+                    soundEffect.play()
                 }
             }
             i++
@@ -84,7 +99,7 @@ export class Game {
                 if (Math.pow(otherastroid.x - astroid.x, 2) + Math.pow(otherastroid.y - astroid.y, 2) < Math.pow(astroid.radius()+otherastroid.radius(), 2)) {
                     is_colliding = true
                     if (astroid.collision_timeout < 1) {
-                        ;[otherastroid.dx, astroid.dx, otherastroid.dy, astroid.dy] = [astroid.dx, otherastroid.dx, astroid.dy, otherastroid.dy]
+                        swap(astroid, otherastroid)
                     }
                 }
             }
@@ -119,6 +134,17 @@ export class Game {
         }
         for (let bolts of this.bolts) {
             bolts.render(elapsedTime, ctx)
+        }
+        ctx.fillStyle = "yellow";
+        ctx.fillText(`Score: ${this.score}`, 20, 20)
+        ctx.fillText(`Level: ${this.level}`, 20, 40)
+        ctx.fillText(`Lives: ${this.lives}`, 20, 60)
+        if (this.lives < 0) {
+
+            ctx.fillStyle = `rgba(0, 0, 0, 0.8)`
+            ctx.fillRect(0, 0, this.width, this.height)
+            ctx.fillStyle = `rgba(255, 0, 0, 0.8)`
+            ctx.fillText("loser", 400, 200)
         }
     }
 }

@@ -5,6 +5,7 @@ const MS_PER_FRAME = 1000/8;
 import {Bolt} from './bolt'
 
 module.exports = exports = Player;
+let soundEffect = new Audio(encodeURI('assets/bong.ogg'));
 
 function Player(position, canvas, world) {
     this.world = world
@@ -42,6 +43,7 @@ function Player(position, canvas, world) {
         break;
       case ' ':
         Bolt.create(world, self)
+        soundEffect.play()
         break;
     }
   }
